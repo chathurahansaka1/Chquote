@@ -14,6 +14,7 @@
             --input-bg: #ffffff;
             --button-bg: #1da1f2;
             --name-color: #000000;
+            --profile-border-color: #ffffff;
         }
 
         [data-theme="dark"] {
@@ -23,6 +24,7 @@
             --input-bg: #3d3d3d;
             --button-bg: #0d8ecf;
             --name-color: #ffffff;
+            --profile-border-color: #ffffff;
         }
 
         body {
@@ -52,6 +54,7 @@
             overflow: hidden;
             background-size: cover;
             background-position: center;
+            transition: all 0.3s;
         }
 
         .profile-section {
@@ -68,7 +71,7 @@
             border-radius: 50%;
             object-fit: cover;
             margin-right: 15px;
-            border: 3px solid #fff;
+            border: 3px solid var(--profile-border-color);
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             transition: all 0.3s;
         }
@@ -106,6 +109,7 @@
             backdrop-filter: blur(5px);
             min-height: 100px;
             z-index: 2;
+            transition: all 0.3s;
         }
 
         .inverted-quote {
@@ -370,10 +374,14 @@
         }
 
         function downloadCard() {
-            html2canvas(document.querySelector("#outputCard")).then(canvas => {
+            html2canvas(document.querySelector("#outputCard"), {
+                backgroundColor: null, // Transparent background
+                scale: 2, // Higher quality
+                useCORS: true
+            }).then(canvas => {
                 const link = document.createElement('a');
                 link.download = 'social-card.png';
-                link.href = canvas.toDataURL();
+                link.href = canvas.toDataURL('image/png');
                 link.click();
             });
         }
@@ -386,4 +394,4 @@
         }
     </script>
 </body>
-  </html>
+</html>

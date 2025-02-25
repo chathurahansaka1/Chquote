@@ -14,6 +14,7 @@
             --input-bg: #ffffff;
             --button-bg: #1da1f2;
             --name-color: #000000;
+            --profile-border-color: #ffffff;
         }
 
         [data-theme="dark"] {
@@ -23,6 +24,7 @@
             --input-bg: #3d3d3d;
             --button-bg: #0d8ecf;
             --name-color: #ffffff;
+            --profile-border-color: #ffffff;
         }
 
         body {
@@ -68,7 +70,7 @@
             border-radius: 50%;
             object-fit: cover;
             margin-right: 15px;
-            border: 3px solid #fff;
+            border: 3px solid var(--profile-border-color);
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             transition: all 0.3s;
         }
@@ -106,6 +108,10 @@
             backdrop-filter: blur(5px);
             min-height: 100px;
             z-index: 2;
+        }
+
+        #contentText {
+            white-space: pre-wrap; /* Preserve spaces and line breaks */
         }
 
         .inverted-quote {
@@ -333,7 +339,7 @@
             const nameColor = document.getElementById('nameColor').value;
             const textColor = document.getElementById('textColor').value;
             
-            document.getElementById('profileImage').style.borderColor = borderColor;
+            document.documentElement.style.setProperty('--profile-border-color', borderColor);
             document.documentElement.style.setProperty('--name-color', nameColor);
             document.documentElement.style.setProperty('--text-color', textColor);
 
@@ -386,4 +392,4 @@
         }
     </script>
 </body>
-  </html>
+</html>

@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media Card Generator</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #000000;
+            --card-bg: #ffffff;
+            --input-bg: #ffffff;
+            --button-bg: #1da1f2;
+            --name-color: #000000;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1a1a1a;
+            --text-color: #ffffff;
+            --card-bg: #2d2d2d;
+            --input-bg: #3d3d3d;
+            --button-bg: #0d8ecf;
+            --name-color: #ffffff;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: var(--bg-color);
+            font-family: 'Arial', sans-serif;
+            color: var(--text-color);
+            transition: all 0.3s;
+        }
+
+        .card-container {
+            width: 100%;
+            max-width: 500px;
+            padding: 20px;
+        }
+
+        .output-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .profile-section {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .profile-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 15px;
+            border: 3px solid #fff;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .profile-info {
+            flex-grow: 1;
+        }
+
+        .display-name {
+            font-weight: bold;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            color: var(--name-color);
+            transition: color 0.3s;
+        }
+
+        .verified-icon {
+            color: #1da1f2;
+            margin-left: 5px;
+            font-size: 16px;
+        }
+
+        .username {
+            color: #657786;
+            font-size: 14px;
+        }
+
+        .content {
+            background: rgba(240, 240, 240, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            position: relative;
+            backdrop-filter: blur(5px);
+            min-height: 100px;
+            z-index: 2;
+        }
+
+        .inverted-quote {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-15deg);
+            font-size: 3em;
+            color: rgba(0,0,0,0.1);
+            z-index: 1;
+            user-select: none;
+            pointer-events: none;
+            text-align: center;
+            max-width: 100%;
+            word-break: break-word;
+        }
+
+        .input-section {
+            margin-top: 20px;
+            background: var(--input-bg);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .customization-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .customization-option {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .file-upload {
+            position: relative;
+            margin-bottom: 10px;
+        }
+
+        .file-upload input[type="file"] {
+            opacity: 0;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-upload label {
+            display: block;
+            padding: 10px;
+            background: var(--button-bg);
+            color: white;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-upload label:hover {
+            background: #0d8ecf;
+        }
+
+        input, textarea, button {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: var(--input-bg);
+            color: var(--text-color);
+            transition: all 0.3s;
+        }
+
+        button {
+            background-color: var(--button-bg);
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 12px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .theme-toggle {
+            background: var(--button-bg);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 600px) {
+            .card-container {
+                padding: 10px;
+            }
+
+            .customization-options {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+                width: 35px;
+                height: 35px;
+            }
+
+            .profile-image {
+                width: 50px;
+                height: 50px;
+            }
+
+            .display-name {
+                font-size: 16px;
+            }
+
+            .username {
+                font-size: 12px;
+            }
+
+            .content {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+    
+    <div class="card-container">
+        <div class="output-card" id="outputCard">
+            <div class="profile-section">
+                <img id="profileImage" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" alt="Profile" class="profile-image">
+                <div class="profile-info">
+                    <div class="display-name" id="displayName">
+                        Display Name 
+                        <i class="fas fa-check-circle verified-icon"></i>
+                    </div>
+                    <div class="username" id="displayUsername">@username</div>
+                </div>
+            </div>
+            
+            <div class="content">
+                <div class="inverted-quote" id="invertedQuote"></div>
+                <div id="contentText">What's happening?</div>
+            </div>
+        </div>
+
+        <div class="input-section">
+            <div class="customization-options">
+                <div class="customization-option">
+                    <input type="color" id="bgColor" class="color-picker">
+                    <label>Background Color</label>
+                </div>
+                <div class="customization-option">
+                    <input type="color" id="borderColor" class="color-picker" value="#ffffff">
+                    <label>Profile Border</label>
+                </div>
+                <div class="customization-option">
+                    <input type="color" id="nameColor" class="color-picker" value="#000000">
+                    <label>Name Color</label>
+                </div>
+                <div class="customization-option">
+                    <input type="color" id="textColor" class="color-picker" value="#000000">
+                    <label>Text Color</label>
+                </div>
+            </div>
+
+            <div class="file-upload">
+                <input type="file" id="bgImage" accept="image/*">
+                <label for="bgImage"><i class="fas fa-image"></i> Background Image</label>
+            </div>
+
+            <div class="file-upload">
+                <input type="file" id="imageInput" accept="image/*">
+                <label for="imageInput"><i class="fas fa-user-circle"></i> Profile Image</label>
+            </div>
+
+            <input type="text" id="nameInput" placeholder="Display Name">
+            <input type="text" id="usernameInput" placeholder="Username">
+            <textarea id="contentInput" placeholder="What's happening?" rows="4"></textarea>
+            <input type="text" id="quoteInput" placeholder="Inverted Quote Text">
+            
+            <div class="button-group">
+                <button onclick="updateCard()"><i class="fas fa-magic"></i> Generate</button>
+                <button onclick="downloadCard()"><i class="fas fa-download"></i> Download</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateCard() {
+            // Profile Image
+            const imageInput = document.getElementById('imageInput');
+            if (imageInput.files && imageInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profileImage').src = e.target.result;
+                };
+                reader.readAsDataURL(imageInput.files[0]);
+            }
+
+            // Color Customization
+            const borderColor = document.getElementById('borderColor').value;
+            const nameColor = document.getElementById('nameColor').value;
+            const textColor = document.getElementById('textColor').value;
+            
+            document.getElementById('profileImage').style.borderColor = borderColor;
+            document.documentElement.style.setProperty('--name-color', nameColor);
+            document.documentElement.style.setProperty('--text-color', textColor);
+
+            // Background Customization
+            const bgColor = document.getElementById('bgColor').value;
+            const bgImage = document.getElementById('bgImage').files[0];
+            const outputCard = document.getElementById('outputCard');
+
+            if (bgImage) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    outputCard.style.backgroundImage = `url(${e.target.result})`;
+                    outputCard.style.backgroundColor = 'transparent';
+                };
+                reader.readAsDataURL(bgImage);
+            } else {
+                outputCard.style.backgroundImage = 'none';
+                outputCard.style.backgroundColor = bgColor;
+            }
+
+            // Text Content
+            document.getElementById('displayName').innerHTML = 
+                (document.getElementById('nameInput').value || 'Display Name') + 
+                ' <i class="fas fa-check-circle verified-icon"></i>';
+
+            document.getElementById('displayUsername').textContent = 
+                '@' + (document.getElementById('usernameInput').value || 'username');
+
+            document.getElementById('contentText').textContent = 
+                document.getElementById('contentInput').value || "What's happening?";
+
+            document.getElementById('invertedQuote').textContent = 
+                document.getElementById('quoteInput').value ? `"${document.getElementById('quoteInput').value}"` : '';
+        }
+
+        function downloadCard() {
+            html2canvas(document.querySelector("#outputCard")).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'social-card.png';
+                link.href = canvas.toDataURL();
+                link.click();
+            });
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark');
+            document.body.setAttribute('data-theme',
+                document.body.classList.contains('dark') ? 'dark' : 'light'
+            );
+        }
+    </script>
+</body>
+  </html>
